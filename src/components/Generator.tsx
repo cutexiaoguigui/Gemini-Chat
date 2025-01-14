@@ -18,6 +18,9 @@ export default () => {
   const [isStick, setStick] = createSignal(false)
   const [showComingSoon, setShowComingSoon] = createSignal(false)
   const maxHistoryMessages = parseInt(import.meta.env.PUBLIC_MAX_HISTORY_MESSAGES || '99')
+  // 新增一个信号来控制按钮的显示和隐藏
+  const [isInputFocused, setIsInputFocused] = createSignal(false);
+
 
   createEffect(() => (isStick() && smoothToBottom()))
 
@@ -211,6 +214,14 @@ export default () => {
     setShowComingSoon(true)
   }
 
+    // 新增处理焦点事件的函数
+  const handleFocus = () => {
+      setIsInputFocused(true);
+  };
+  const handleBlur = () => {
+      setIsInputFocused(false);
+  };
+
   return (
     <div my-6>
       {/* beautiful coming soon alert box, position: fixed, screen center, no transparent background, z-index 100*/}
@@ -268,15 +279,20 @@ export default () => {
               inputRef.style.height = 'auto'
               inputRef.style.height = `${inputRef.scrollHeight}px`
             }}
+             onFocus={handleFocus}
+             onBlur={handleBlur}
             rows="1"
             class="gen-textarea"
           />
-          <button onClick={handleButtonClick} gen-slate-btn>
-            发送
-          </button>
-          <button title="Clear" onClick={clear} gen-slate-btn-2>
-            <IconClear />
-          </button>
+           {/* 使用Show组件控制按钮显示 */}
+          <Show when={!isInputFocused()}>
+                 <button onClick={handleButtonClick} gen-slate-btn>
+                    发送
+                  </button>
+                  <button title="Clear" onClick={clear} gen-slate-btn-2>
+                    <IconClear />
+                  </button>
+          </Show>
         </div>
       </Show>
       {/* <div class="fixed bottom-5 left-5 rounded-md hover:bg-slate/10 w-fit h-fit transition-colors active:scale-90" class:stick-btn-on={isStick()}>
