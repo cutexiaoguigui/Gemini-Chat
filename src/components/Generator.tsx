@@ -10,6 +10,7 @@ import type { ChatMessage, ErrorMessage } from '@/types'
 
 export default () => {
   let inputRef: HTMLTextAreaElement
+  const [isInputFocused, setIsInputFocused] = createSignal(false)
   const [messageList, setMessageList] = createSignal<ChatMessage[]>([])
   const [currentError, setCurrentError] = createSignal<ErrorMessage>()
   const [currentAssistantMessage, setCurrentAssistantMessage] = createSignal('')
@@ -18,9 +19,6 @@ export default () => {
   const [isStick, setStick] = createSignal(false)
   const [showComingSoon, setShowComingSoon] = createSignal(false)
   const maxHistoryMessages = parseInt(import.meta.env.PUBLIC_MAX_HISTORY_MESSAGES || '99')
-  // 新增一个信号来控制按钮的显示和隐藏
-  const [isInputFocused, setIsInputFocused] = createSignal(false);
-
 
   createEffect(() => (isStick() && smoothToBottom()))
 
@@ -79,18 +77,13 @@ export default () => {
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'instant' })
   }
 
-  // ? Interim Solution
-  // ensure that the user and the model have a one-to-one conversation and avoid any errors like:
-  // "Please ensure that multiturn requests ends with a user role or a function response."
-  // convert the raw list into data that conforms to the interface api rules
   const convertReqMsgList = (originalMsgList: ChatMessage[]) => {
     return originalMsgList.filter((curMsg, i, arr) => {
-      // Check if there is a next message
       const nextMsg = arr[i + 1]
-      // Include the current message if there is no next message or if the roles are different
       return !nextMsg || curMsg.role !== nextMsg.role
     })
   }
+
   const requestWithLatestMessage = async() => {
     setLoading(true)
     setCurrentAssistantMessage('')
@@ -169,7 +162,6 @@ export default () => {
       setCurrentAssistantMessage('')
       setLoading(false)
       setController(null)
-      // Disable auto-focus on touch devices
       if (!('ontouchstart' in document.documentElement || navigator.maxTouchPoints > 0))
         inputRef.focus()
     }
@@ -210,21 +202,20 @@ export default () => {
   }
 
   const handlePictureUpload = () => {
-    // coming soon
     setShowComingSoon(true)
   }
 
-    // 新增处理焦点事件的函数
-  const handleFocus = () => {
-      setIsInputFocused(true);
-  };
-  const handleBlur = () => {
-      setIsInputFocused(false);
-  };
+  // 新增的焦点处理函数
+  const handleInputFocus = () => {
+    setIsInputFocused(true)
+  }
+
+  const handleInputBlur = () => {
+    setIsInputFocused(false)
+  }
 
   return (
     <div my-6>
-      {/* beautiful coming soon alert box, position: fixed, screen center, no transparent background, z-index 100*/}
       <Show when={showComingSoon()}>
         <div class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-100">
           <div class="bg-white rounded-md shadow-md p-6">
@@ -266,42 +257,40 @@ export default () => {
         )}
       >
         <div class="gen-text-wrapper relative">
-          <button title="Picture" onClick={handlePictureUpload} class="absolute left-1rem top-50% translate-y-[-50%]">
-            <Picture />
-          </button>
+          <Show when={!isInputFocused()}>
+            <button 
+              title="Picture" 
+              onClick={handlePictureUpload} 
+              class="absolute left-1rem top-50% translate-y-[-50%]"
+            >
+              <Picture />
+            </button>
+          </Show>
           <textarea
             ref={inputRef!}
             onKeyDown={handleKeydown}
             placeholder="输入信息"
             autocomplete="off"
             autofocus
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
             onInput={() => {
               inputRef.style.height = 'auto'
               inputRef.style.height = `${inputRef.scrollHeight}px`
             }}
-             onFocus={handleFocus}
-             onBlur={handleBlur}
             rows="1"
             class="gen-textarea"
           />
-           {/* 使用Show组件控制按钮显示 */}
           <Show when={!isInputFocused()}>
-                 <button onClick={handleButtonClick} gen-slate-btn>
-                    发送
-                  </button>
-                  <button title="Clear" onClick={clear} gen-slate-btn-2>
-                    <IconClear />
-                  </button>
+            <button onClick={handleButtonClick} gen-slate-btn>
+              发送
+            </button>
+            <button title="Clear" onClick={clear} gen-slate-btn-2>
+              <IconClear />
+            </button>
           </Show>
         </div>
       </Show>
-      {/* <div class="fixed bottom-5 left-5 rounded-md hover:bg-slate/10 w-fit h-fit transition-colors active:scale-90" class:stick-btn-on={isStick()}>
-        <div>
-          <button class="p-2.5 text-base" title="stick to bottom" type="button" onClick={() => setStick(!isStick())}>
-            <div i-ph-arrow-line-down-bold />
-          </button>
-        </div>
-      </div> */}
     </div>
   )
 }
