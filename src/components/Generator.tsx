@@ -218,12 +218,12 @@ export default () => {
         <div class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-100">
           <div class="bg-white rounded-md shadow-md p-6">
             <div class="flex items-center justify-between">
-              <h3 class="text-lg font-medium">Coming soon</h3>
+              <h3 class="text-lg font-medium">即将开放</h3>
               <button onClick={() => setShowComingSoon(false)}>
                 <IconX />
               </button>
             </div>
-            <p class="text-gray-500 mt-2">Chat with picture is coming soon!</p>
+            <p class="text-gray-500 mt-2">上传图片即将开放!</p>
           </div>
         </div>
       </Show>
@@ -249,7 +249,7 @@ export default () => {
         when={!loading()}
         fallback={() => (
           <div class="gen-cb-wrapper">
-            <span>AI is thinking...</span>
+            <span>AI思考中</span>
             <div class="gen-cb-stop" onClick={stopStreamFetch}>Stop</div>
           </div>
         )}
@@ -272,7 +272,7 @@ export default () => {
             class="gen-textarea"
           />
           <button onClick={handleButtonClick} gen-slate-btn>
-            Send
+            发送
           </button>
           <button title="Clear" onClick={clear} gen-slate-btn>
             <IconClear />
