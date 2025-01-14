@@ -257,15 +257,13 @@ export default () => {
         )}
       >
         <div class="gen-text-wrapper relative">
-          <Show when={!isInputFocused()}>
-            <button 
+           <button 
               title="Picture" 
               onClick={handlePictureUpload} 
               class="absolute left-1rem top-50% translate-y-[-50%]"
             >
               <Picture />
-            </button>
-          </Show>
+          </button>
           <textarea
             ref={inputRef!}
             onKeyDown={handleKeydown}
@@ -281,10 +279,10 @@ export default () => {
             rows="1"
             class="gen-textarea"
           />
-          <Show when={!isInputFocused()}>
-            <button onClick={handleButtonClick} gen-slate-btn>
+          <button onClick={handleButtonClick} gen-slate-btn>
               发送
             </button>
+          <Show when={!isInputFocused()}>
             <button title="Clear" onClick={clear} gen-slate-btn-2>
               <IconClear />
             </button>
