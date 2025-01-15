@@ -53,7 +53,7 @@ export default () => {
     isStick() ? localStorage.setItem('stickToBottom', 'stick') : localStorage.removeItem('stickToBottom')
   }
 
-  const handleButtonMouseDown = (e: MouseEvent) => {
+  const handleButtonClick = (e: MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
     
