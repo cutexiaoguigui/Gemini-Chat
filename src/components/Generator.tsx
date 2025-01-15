@@ -281,7 +281,7 @@ export default () => {
             class="gen-textarea"
           />
           <button onClick={handleButtonClick} gen-slate-btn>
-              <img src={send} style={{width: '20px',height: '20px'}}/>
+              <img src={send} style={{width: '20px !important',height: '20px', display: 'inline-block'}}/>
             </button>
           <Show when={!isInputFocused()}>
             <button title="Clear" onClick={clear} gen-slate-btn>
