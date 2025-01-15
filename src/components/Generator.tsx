@@ -53,12 +53,15 @@ export default () => {
     isStick() ? localStorage.setItem('stickToBottom', 'stick') : localStorage.removeItem('stickToBottom')
   }
 
-  const handleButtonClick = async() => {
+  const handleButtonClick = async(e?: Event) => {
+    e?.preventDefault()
+    
     const inputValue = inputRef.value
     if (!inputValue)
       return
 
     inputRef.value = ''
+    inputRef.style.height = 'auto'
     setMessageList([
       ...messageList(),
       {
@@ -206,7 +209,6 @@ export default () => {
     setShowComingSoon(true)
   }
 
-  // 新增的焦点处理函数
   const handleInputFocus = () => {
     setIsInputFocused(true)
   }
@@ -258,12 +260,12 @@ export default () => {
         )}
       >
         <div class="gen-text-wrapper relative">
-           <button 
-              title="Picture" 
-              onClick={handlePictureUpload} 
-              class="absolute left-1rem top-50% translate-y-[-50%]"
-            >
-              <Picture />
+          <button 
+            title="Picture" 
+            onClick={handlePictureUpload} 
+            class="absolute left-1rem top-50% translate-y-[-50%]"
+          >
+            <Picture />
           </button>
           <textarea
             ref={inputRef!}
@@ -280,9 +282,13 @@ export default () => {
             rows="1"
             class="gen-textarea"
           />
-          <button onClick={handleButtonClick} gen-slate-btn>
-              <img src={send} style={{width: '21px',height: '16px'}}/>
-            </button>
+          <button 
+            onClick={(e) => handleButtonClick(e)} 
+            gen-slate-btn
+            type="button"
+          >
+            <img src={send} style={{width: '21px',height: '16px'}}/>
+          </button>
           <Show when={!isInputFocused()}>
             <button title="Clear" onClick={clear} gen-slate-btn>
               <IconClear />
