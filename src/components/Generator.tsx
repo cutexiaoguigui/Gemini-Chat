@@ -53,13 +53,15 @@ export default () => {
     isStick() ? localStorage.setItem('stickToBottom', 'stick') : localStorage.removeItem('stickToBottom')
   }
 
-  const handleButtonClick = async(e?: Event) => {
-    e?.preventDefault()
+  const handleButtonClick = (e: MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
     
     const inputValue = inputRef.value
     if (!inputValue)
       return
 
+    inputRef.focus()
     inputRef.value = ''
     inputRef.style.height = 'auto'
     setMessageList([
@@ -201,7 +203,7 @@ export default () => {
 
     if (e.key === 'Enter') {
       e.preventDefault()
-      handleButtonClick()
+      handleButtonClick(e as unknown as MouseEvent)
     }
   }
 
@@ -283,7 +285,7 @@ export default () => {
             class="gen-textarea"
           />
           <button 
-            onClick={(e) => handleButtonClick(e)} 
+            onMouseDown={(e) => handleButtonClick(e)}
             gen-slate-btn
             type="button"
           >
